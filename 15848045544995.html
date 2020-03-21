@@ -1,0 +1,782 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>  
+	  
+  	Jacoco入门指北 - LensAclrtn`s Blog
+  	
+	</title>
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="atom.xml" rel="alternate" title="LensAclrtn`s Blog" type="application/atom+xml">
+
+	<link href="asset/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="asset/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<script src="asset/javascripts/jquery.min.js"></script>
+	
+
+	<!--[if lt IE 9]><script src="asset/javascripts/html5.js"></script><![endif]-->
+	<!-- <link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'> -->
+	<style type="text/css">
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Nunito-Light'), url(asset/font/1TiHc9yag0wq3lDO9cw0voX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Nunito-Regular'), url(asset/font/6TbRXKWJjpj6V2v_WyRbMX-_kf6ByYO6CLYdB4HQE-Y.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* latin */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Nunito-Bold'), url(asset/font/TttUCfJ272GBgSKaOaD7KoX0hVgzZQUfRDuZrPvH3D8.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+	</style>
+	
+	<style type="text/css">
+	.container .left-col{ opacity: 1;}
+	#pagenavi a{ font-size: 1.3em;}
+	#pagenavi .next:before{ top: 3px;}
+	#pagenavi .prev:before{ top: 3px;}
+	.container .mid-col .mid-col-container #content .archives .title{ font-size: 1.5em;}
+	.container .mid-col .mid-col-container #content article{ padding: 15px 0px;}
+	#header .subtitle {
+		line-height: 1.2em;
+		padding-top: 8px;
+	}
+	article pre{ background: none; border: none; padding: 0;}
+	article .entry-content{text-align: left;}
+	.share-comment{ padding: 25px 0px; clear: both;}
+	hr{ margin: 20px 0px;border: 0; border-top:solid 1px #ddd;}
+	</style>
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+				<header id="header" class="inner">
+				 
+					
+					<h1><a href="index.html">LensAclrtn`s Blog</a></h1>
+					<p class="subtitle">知止而后有定</p>
+					<nav id="main-nav">
+						<ul class="main">
+						
+						  <li id=""><a target="_self" href="index.html">Home</a></li>
+						
+						  <li id=""><a target="_self" href="archives.html">Archives</a></li>
+						
+						  <li id=""><a target="_self" href="about.html">About</a></li>
+						
+						</ul>
+					</nav>
+
+					<nav id="sub-nav">
+						<div class="social">
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="twitter" target="_blank" href="https://twitter.com/LensAclrtn" title="Twitter">Twitter</a>
+<a target="_blank" class="github" target="_blank" href="https://github.com/lzpsgh" title="GitHub">GitHub</a>
+<a target="_blank" class="email" href="mailto:lensaclrtn@gmail.com" title="Email">Email</a>
+
+								
+
+								<a class="rss" href="atom.xml" title="RSS">RSS</a>
+							
+						</div>
+					</nav>
+				</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			<div class="mid-col-container"> <div id="content" class="inner">
+
+	<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+		<h1 class="title" itemprop="name">Jacoco入门指北</h1>
+		<div class="entry-content" itemprop="articleBody">
+			<p>前阵子使用 Jacoco 进行代码覆盖率测试，由于项目特殊遇到了不少坑，网上搜到的教程感觉也不够全面，干脆自己整理一份</p>
+
+<span id="more"></span><!-- more -->
+
+<h1>0. 前言</h1>
+
+<p>本次所用到的工具软件的版本信息如下</p>
+
+<ul>
+<li>Jacoco 版本：0.8.0</li>
+<li>Eclemma 版本：3.0.0</li>
+<li>Eclipse 版本：4.3</li>
+<li>JDK 版本：1.8</li>
+<li>ANT 版本：1.9</li>
+</ul>
+
+<h1>1. 工具介绍</h1>
+
+<p>JaCoCo，即 Java Code Coverage，是一款开源的 Java 代码覆盖率统计工具。支持 Ant 、Maven、Gradle 等构建工具，支持 Jenkins、Sonar 等持续集成工具，支持 Java Agent 技术远程监控 Java 程序运行情况，支持Eclipse、IDEA等IDE，提供HTML，CSV 等格式的报表导出，轻量级实现，对外部库和系统资源的依赖性小，性能开销小。</p>
+
+<p>JaCoCo 支持从 JDK1.0 版本到 JDK1.8 版本 的 Java 类文件。但是，JaCoCo 工具所需的JRE 版本最小为 1.5。另外，1.6及以上版本的测试中的类文件必须包含有效的堆栈映射帧。</p>
+
+<h1>2. 入门使用</h1>
+
+<p>本文将以 tcpserver 模式远程获取应用覆盖率，通过 Ant 脚本执行相关命令，在 Eclipse 上查看源码覆盖率情况。</p>
+
+<h2>2.1 配置部署</h2>
+
+<p>先从官网获取 Jacoco 的压缩包， 将其上传到你要进行覆盖率检测的应用所在的服务器上。在解压后的 lib 目录下找到 jacocoagent ，将其路径添加到 JAVA_OPTS 环境变量中（如果项目中用到了 Tomcat，也可以直接将其添加到 CATALINA_OPTS 的环境变量中，JAVA_OPTS 只是更通用而已）。</p>
+
+<p>如果是 Windows 系统，将以下内容追加到 JAVA_OPTS 环境变量。</p>
+
+<pre class="line-numbers"><code class="language-shell">-javaagent:D:\jacoco-0.7.9\lib\jacocoagent.jar=includes=*,address=10.1.231.168,port=6300,output=tcpserver,append=true;%JAVA_OPTS%
+</code></pre>
+
+<p>如果是 Linux 系统，可以直接编辑 .bash_profile</p>
+
+<pre class="line-numbers"><code class="language-shell">export JACOCO=&quot;-javaagent:/$your_path/jacocoagent.jar=includes=com.grgbanking.*,output=tcpserver,address=11.111.1.11,port=6300,append=true&quot;
+export JAVA_OPTS=&quot;$JACOCO&quot;:&quot;$JAVA_OPTS&quot; 
+</code></pre>
+
+<p>其中常用选项的含义如下</p>
+
+<ul>
+<li>javaagent: 指定 Jacocoagent 的路径</li>
+<li>includes: 表示只对指定包下的类进行覆盖率注入分析，默认为 *，示例中只分析 com.test 包的类。</li>
+<li>output: 表示覆盖率的输出方式。在 tcpserver 模式下，Jacoco 会在客户端执行 dump 操作时将目前收集获取到的覆盖率数据统一写到指定的ip和端口。在 file 模式下，Jacoco 只会在JVM 终止的时候才将收集到的覆盖率数据写入到指定的 exec 文件里去。注意，不管是任何模式，应用运行过程中的临时覆盖率数据都是保存在服务端的内存中的，因此对于 tcpserver 模式来说，如果 JVM 不小心终止了，那么在这个覆盖率统计周期内的覆盖率数据都会丢失。还有一个 tcpclient 模式则是以客户端的形式启动，由于目前没有这个使用场景，这里不过多讨论。</li>
+<li>address: 只限 tcpserver 与 tcpclient 使用，表示监听的应用服务器IP地址或主机名。可根据实际情况自由选择。</li>
+<li>port: 只限 tcpserver 与 tcpclient 使用，表示监听的应用服务器的端口号，一般用默认6300即可。</li>
+<li>append: 表示覆盖率数据的追加方式，默认为true。客户端在执行 dump 操作时，如果该 exec 覆盖率文件已存在，那么该轮的覆盖率数据会直接在文本末尾进行追加，因此会导致覆盖率数据文件越来越大。如果改为false，则客户端执行 dump 操作时会直接清空原覆盖率文件的内容，保证该覆盖率文件只有该轮的覆盖率数据。</li>
+</ul>
+
+<p>修改好以后启动 Java 应用，读取 JAVA_OPTS 环境变量的信息，Jacoco 被加载进。检查下6300端口如果已监听，说明服务端 Jacoco 启动成功。</p>
+
+<h2>2.2 数据获取</h2>
+
+<p>在正常运行过程中，服务器端的 Jacoco 只是将获取的覆盖率数据保存到内存中，我们还需要在客户端上进行操作才能将覆盖率数据 dump 到客户端。</p>
+
+<p>Jacoco 为我们提供了 Ant、Maven、CLI 等多种方式进行操作，其中 CLI  方式唯一的用途就是可以用来执行 execinfo 命令，这个命令是 Ant 与 Maven 所没有的，它可以将 exec 简单转成文本格式方便你查看每个类的覆盖率百分比。Maven 与 Ant 大同小异，由于项目中使用 Ant 进行构建，下文中将以 Ant 为例讲解。</p>
+
+<p>在使用 Ant 脚本获取覆盖率之前，我们需要先去官网下载好 Ant，注意安装过程中要手动勾选 “添加到环境变量” 的相关选项，省得以后要自己添加。<br/>
+安装好以后打开 cmd 输入<code>ant -version</code>，如果能显示相关的版本信息例如 “ Apache Ant(TM) version 1.9.11 compiled on March 23 2018 ”，则说明 Ant 安装成功。</p>
+
+<p>虽然官方也提供了 <a href="https://www.jacoco.org/jacoco/trunk/doc/examples/build/build.xml">Ant脚本</a>，但较为简单，部分内容没有说明，因此文末会附上我在项目中使用的完整脚本。</p>
+
+<h2>2.3 统计分析</h2>
+
+<p>对于不熟悉 Java 或者对项目目录结构不了解的朋友，往往会由于源码和字节码不匹配或者路径错误导致在结合源码查看覆盖率时反复折腾，跑半天不知道生成的 exec 到底有没有统计到。这时候我们可以使用 CLI 中的 execinfo 命令，简单查看下 exec 文件中的覆盖率是否为0。</p>
+
+<p><code>java -jar D:\jacococli.jar execinfo E:\jacoco\igaps1008.exec</code></p>
+
+<p>这种方式只能查看 exec 文件的概况，要想结合源码查看详细的覆盖率使用情况，我们还是需要花点时间，配置好源码和字节码，这样才能在 IDE 中查看源码覆盖率。</p>
+
+<p>首先需要在 Eclipse 中安装 Eclemma 插件，你可以使用 Eclipse 的 MarketPlace 在线安装，</p>
+
+<p><figure><img src="https://upload-images.jianshu.io/upload_images/1295721-c00f087d8a34eead.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="在线安装"/><figcaption>在线安装</figcaption></figure></p>
+
+<p>也可以下载离线安装包 eclemma-3.0.0.zip，分别将里面的 features 和 plugins 文件夹里的 jar 包拷贝到 Eclipse 对应的文件夹中，重启 Eclipse 后如果有显示覆盖率图标或视图就说明安装成功了。</p>
+
+<p><figure><img src="https://upload-images.jianshu.io/upload_images/1295721-9921de1350290235.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="安装后界面"/><figcaption>安装后界面</figcaption></figure></p>
+
+<p>接着下载项目源码并将项目导入到 Eclipse 中</p>
+
+<p><figure><img src="https://upload-images.jianshu.io/upload_images/1295721-f1941c4c38bf0217.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="项目目录结构"/><figcaption>项目目录结构</figcaption></figure></p>
+
+<p>注意导入前取消 Eclipse 中的自动编译（即 Project - build automatically ）， 然后拷贝服务器上的字节码文件到这个项目的编译输出文件夹中。例如这个项目的编译输出文件夹为根目录下bin目录，那么就把字节码文件都拷贝到这个目录下，到这里我们的项目就准备好了。</p>
+
+<p>在 Eclipse 控制台 Coverage 视图窗口的空白位置，右键--Import Session，在 Coverage Session 窗口，选择第三个代理模式，Agent address 填写需要监控覆盖率的远程服务器地址。点击下一步后，选择需要查看覆盖率的源码，一般不需要勾选include binary libraries，再点击Finish即可查看覆盖率。</p>
+
+<p><figure><img src="https://upload-images.jianshu.io/upload_images/1295721-7a4e87bba4a1a51e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="导入覆盖率数据"/><figcaption>导入覆盖率数据</figcaption></figure></p>
+
+<p><figure><img src="https://upload-images.jianshu.io/upload_images/1295721-b2f310c2870997fc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="tcpserver模式"/><figcaption>tcpserver模式</figcaption></figure></p>
+
+<h1>3. 注意事项</h1>
+
+<ul>
+<li><p>官方文档才是王道<br/>
+强烈建议在使用 Jacoco 之前阅读<a href="https://www.jacoco.org/jacoco/trunk/doc/index.html">官方文档</a>，虽然是英文，但是内容也很简单，花1个小时大概浏览下能对 Jacoco 有个系统性的了解。这里对 Jacoco 的官方部分 FAQ 进行了简单翻译，同时加入了部分自己在使用过程中遇到的坑。</p></li>
+<li><p>源代码没有覆盖率高亮问题<br/>
+必须确保使用调试信息编译类文件以包含行号，如果使用 Ant 编译脚本，则需要检查脚本中 javac 相关部分是否没有设置 debug=true。<br/>
+源文件必须在报表生成时正确提供。即指定的源文件夹必须是定义Java包的文件夹的直接父级。</p></li>
+<li><p>覆盖率统计偏差<br/>
+既然 Jacoco 是依据 class 文件进行覆盖率的统计，那么在用 EclEmma 合并会话数据时，应该保证多个会话的所测试 class 文件字节码内容是相同的，即多次测试过程中被测试 Java 类的源文件没有被修改并且重新编译过。所以在 Eclipse 中，测试用例开始执行执行后，应该保证 Testee 源文件不被改动。如果修改了被测试源文件并保存（ Eclipse 会自动重新编译），请将之前的所有测试用例重新以 Coverage As 模式执行一般，否则合并后的覆盖率测试数据会有误差。<br/>
+另外，由于 JaCoCo 分析统计的是编译后的 class 文件中字节码指令的执行情况。例如某源文件中有一个静态的方法 someMethod，但是在编译时 Javac 会自动为我们的类生成一个构造方法（本例中没有提供非空的构造方法），所以这个类同时有 someMethod 和一个构造方法。由于在执行静态方法过程中没有调用到构造函数，所以会显示覆盖率不是100%</p></li>
+<li><p>Android应用使用覆盖率<br/>
+由于Android不能通过JVM停止后自动dump覆盖率数据，因此当Android应用进程不存在或停止的时候，覆盖率数据不会生成。要想获得Android应用的覆盖率，，必须使用离线插桩模式进行覆盖率分析</p></li>
+<li><p>多源文件目录<br/>
+Ant 脚本执行起来很方便，但如果要执行 report 命令则需要注意，如果该应用编译后的class 或 jar 分别在几个不同的目录下，那么就需要分别在 Ant 脚本中指定 group，同时每个 group 也都要指定源文件 sourcefiles 以及 编译后的类文件 classfiles。同样的，如果<br/>
+项目的源码存放目录也没有统一的入口，那也需要在一个 sourcefiles 中指定多个 fileset，就如本脚本中分别指定了<code>&lt;fileset dir=&quot;${JacocoClassPath}/lib/core&quot;/&gt;</code>和<code>&lt;fileset dir=&quot;${JacocoClassPath}/project&quot;/&gt;</code> 这2个 classfiles 一样。</p></li>
+<li><p>Eclipse中导入覆盖率数据时出错<br/>
+如果在Eclipse的Eclemma插件中导入exec文件时弹窗，提示 “Error while loading coverage session (code 5001).”<br/>
+一般是因为eclipse 中导入的项目编译输出文件夹目录结构不合法导致，同时 class 文件必须是从服务器中获取的，不能使用 eclipse 自己的编译器编译的 class。由于 Eclipse 默认会开启自动编译，所以哪怕你没有手动编译，在你导入项目的时候 Eclipse 已经帮你编译了一次了。这里必须删掉编译后的 class 然后重新拷贝一份服务器上的 class 文件</p></li>
+</ul>
+
+<p><figure><img src="https://upload-images.jianshu.io/upload_images/1295721-6ac64aed78dba495.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="导入失败"/><figcaption>导入失败</figcaption></figure></p>
+
+<h1>4. 技术原理</h1>
+
+<p>运行时分析 (Runtime Profilling) 技术 在 PureCoverage 中有使用，他就是通过 JVMTI 来监听 JVM 的相关事件进行覆盖率数据收集，而 Jacoco 则是使用字节码注入(Byte Code Instrumentation)的方式，使用 ASM 库在字节码中插入 Probe 探针，通过统计运行时探针的覆盖情况来统计覆盖率信息。</p>
+
+<p><figure><img src="https://upload-images.jianshu.io/upload_images/1295721-4ab23bcb062eb950.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="技术原理"/><figcaption>技术原理</figcaption></figure></p>
+
+<p>On-the-fly 模式：<br/>
+JVM 中通过 javaagent 参数指定特定的 jar 文件启动 Instrumentation 的代理程序，代理程序在通过 Class Loader 装载一个 class 前判断是否转换修改 class文件，将统计代码插入 class，测试覆盖率分析可以在 JVM 执行测试代码的过程中完成。</p>
+
+<p>Offline 模式：<br/>
+在测试前先对文件进行插桩，然后生成插过桩的 class 或 jar 包，测试插过桩的 class 和 jar 包后，会生成动态覆盖信息到文件，最后统一对覆盖信息进行处理，并生成报告。<br/>
+存在如下情况不适合 on-the-fly，需要采用 offline 提前对字节码插桩：</p>
+
+<ol>
+<li>运行环境不支持 java agent。</li>
+<li>部署环境不允许设置 JVM 参数。</li>
+<li>字节码需要被转换成其他的虚拟机如 Android Dalvik VM。</li>
+<li>动态修改字节码过程中和其他 agent 冲突。</li>
+<li>无法自定义用户加载类。</li>
+</ol>
+
+<h1>5. Ant 脚本</h1>
+
+<pre class="line-numbers"><code class="language-markup">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;project default=&quot;report&quot; basedir=&quot;.&quot; xmlns:jacoco=&quot;antlib:org.jacoco.ant&quot;&gt;
+
+    &lt;!-- 定义 Jacoco 相关变量和库路径 --&gt;
+    &lt;property name=&quot;JacocoIP&quot; value=&quot;192.168.22.33&quot;/&gt;
+    &lt;property name=&quot;JacocoPort&quot; value=&quot;6300&quot; /&gt;
+    &lt;property name=&quot;JacocoExec&quot; value=&quot;./jacoco/merge-0608.exec&quot; /&gt;
+    &lt;property name=&quot;JacocoReport&quot; value=&quot;./jacoco/igaps-report.zip&quot; /&gt;
+    &lt;property name=&quot;JacocoSrcPath&quot; value=&quot;.&quot;/&gt;
+    &lt;property name=&quot;JacocoClassPath&quot; value=&quot;./igaps/apps&quot;/&gt;
+    &lt;property name=&quot;Encoding&quot; value=&quot;UTF-8&quot;/&gt;
+    &lt;taskdef uri=&quot;antlib:org.jacoco.ant&quot; resource=&quot;org/jacoco/ant/antlib.xml&quot;&gt;
+        &lt;classpath path=&quot;E:/jacoco/lib/jacocoant.jar&quot;/&gt;
+    &lt;/taskdef&gt;
+    
+   &lt;!--  1 获取覆盖率exec文件 --&gt;
+   &lt;target name=&quot;dump&quot;&gt;
+      &lt;jacoco:dump address=&quot;${JacocoIP}&quot; port=&quot;${JacocoPort}&quot; reset=&quot;false&quot; append=&quot;true&quot; destfile=&quot;${JacocoExec}&quot;  /&gt;
+   &lt;/target&gt;
+   
+   &lt;!-- 2 合并exec文件 --&gt;
+   &lt;!-- 获取指定目录下的所有 exec 文件并将数据合并为一个exec --&gt;
+   &lt;target name=&quot;merge&quot;&gt;
+       &lt;jacoco:merge destfile=&quot;./jacoco/merge.exec&quot;&gt;
+            &lt;fileset dir=&quot;./jacoco/all&quot; includes=&quot;*.exec&quot; /&gt;
+       &lt;/jacoco:merge&gt;
+   &lt;/target&gt;
+
+    &lt;!-- 3 生成覆盖率报告 --&gt;
+   &lt;target name=&quot;report&quot;&gt;
+        &lt;jacoco:report&gt;
+            
+          &lt;executiondata&gt;
+              &lt;file file=&quot;${JacocoExec}&quot; /&gt;
+          &lt;/executiondata&gt;
+          
+          &lt;structure name=&quot;JaCoCo Report&quot;&gt;          
+              &lt;group name=&quot;Core&quot;&gt;
+                  &lt;classfiles&gt;
+                      &lt;fileset dir=&quot;${JacocoClassPath}/lib/core&quot; /&gt;
+                  &lt;/classfiles&gt;
+                  &lt;sourcefiles encoding=&quot;${Encoding}&quot;&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/monitor/timeout&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/tools/utils&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/redis/link&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/redis/util&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/server/init&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/grgbpm/core&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/grgbpm/handler&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/server/core&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/server/backend&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/server/exception&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/server/audit&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/server/dao&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/server/log&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/server/reload&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/server/business&quot;/&gt;                       
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/service/http&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/service/https&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/service/webservice&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/unpack/separativesign&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/pack/separativesign&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/unpack/struct&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/pack/iso8583&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/pack/struct&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/unpack/xml&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/pack/xml&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/unpack/iso8583&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/service/tcp&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/communicate/ftp&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/communicate/http&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/communicate/https&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/communicate/webservice&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/communicate/tcp&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/timeout&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/endflow&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/logic&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/encryptor&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/judge&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/option&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/startflow&quot;/&gt;
+                        &lt;fileset dir=&quot;${JacocoSrcPath}/src/component/format&quot;/&gt;
+                  &lt;/sourcefiles&gt;
+              &lt;/group&gt;
+              
+              &lt;group name=&quot;Project&quot;&gt;           
+                  &lt;classfiles&gt;
+                      &lt;fileset dir=&quot;${JacocoClassPath}/project&quot;/&gt;
+                  &lt;/classfiles&gt;
+                  &lt;sourcefiles encoding=&quot;${Encoding}&quot;&gt;
+                      &lt;fileset dir=&quot;${JacocoSrcPath}/src/project&quot;&gt;
+                            &lt;exclude name=&quot;config/**&quot; /&gt;
+                      &lt;/fileset&gt;
+                  &lt;/sourcefiles&gt;
+              &lt;/group&gt;
+          &lt;/structure&gt;
+          
+          &lt;html destfile=&quot;${JacocoReport}&quot; encoding=&quot;${Encoding}&quot; footer=&quot;${ReportFooter}&quot;/&gt;
+          
+      &lt;/jacoco:report&gt;
+   &lt;/target&gt;   
+  
+&lt;/project&gt;
+</code></pre>
+
+<h1>6 Maven 使用</h1>
+
+<p>有两种方式可以通过maven调用jacoco获取覆盖率</p>
+
+<p>方法1 <br/>
+直接运行以下命令，会自动下载jacoco依赖，同时忽略运行过程中的测试错误<br/>
+<code>mvn clean test org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=true</code><br/>
+执行完成后会在当前目录target目录下生成jacoco.exec文件<br/>
+方便与jenkins进行集成</p>
+
+<p>方法2<br/>
+在pom中添加jacoco插件</p>
+
+<pre class="line-numbers"><code class="language-markup">&lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.jacoco&lt;/groupId&gt;
+                &lt;artifactId&gt;jacoco-maven-plugin&lt;/artifactId&gt;
+                &lt;version&gt;0.8.5&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;!--
+                        包含(includes)或排除(excludes)字段的值应该是相对于目录/ classes /的编译类的类路径(而不是包名)
+                        使用标准通配符语法:*匹配0个或n个字符, ** 匹配0个或n个目录, ? 匹配1个字符
+                    --&gt;
+                    &lt;includes&gt;
+                        &lt;include&gt;com/src/**/*&lt;/include&gt;
+                    &lt;/includes&gt;
+                    &lt;!--你也可以这样排除一个包和它的所有子包/子包 --&gt;
+                    &lt;excludes&gt;
+                        &lt;exclude&gt;com/src/**/*&lt;/exclude&gt;
+                    &lt;/excludes&gt;
+                        
+                      &lt;!-- rules裏面指定覆蓋規則 --&gt;
+                    &lt;rules&gt;
+                        &lt;rule implementation=&quot;org.jacoco.maven.RuleConfiguration&quot;&gt;
+                        &lt;element&gt;BUNDLE&lt;/element&gt;
+                        &lt;limits&gt;　　
+                            &lt;!-- 指定方法覆蓋到50% --&gt;
+                            &lt;limit implementation=&quot;org.jacoco.report.check.Limit&quot;&gt;
+                            &lt;counter&gt;METHOD&lt;/counter&gt;
+                            &lt;value&gt;COVEREDRATIO&lt;/value&gt;
+                            &lt;minimum&gt;0.50&lt;/minimum&gt;
+                            &lt;/limit&gt;
+                            &lt;!-- 指定分支覆蓋到50% --&gt;
+                            &lt;limit implementation=&quot;org.jacoco.report.check.Limit&quot;&gt;
+                            &lt;counter&gt;BRANCH&lt;/counter&gt;
+                            &lt;value&gt;COVEREDRATIO&lt;/value&gt;
+                            &lt;minimum&gt;0.50&lt;/minimum&gt;
+                            &lt;/limit&gt;
+                            &lt;!-- 指定類覆蓋到100%，不能遺失任何類 --&gt;
+                            &lt;limit implementation=&quot;org.jacoco.report.check.Limit&quot;&gt;
+                            &lt;counter&gt;CLASS&lt;/counter&gt;
+                            &lt;value&gt;MISSEDCOUNT&lt;/value&gt;
+                            &lt;maximum&gt;0&lt;/maximum&gt;
+                            &lt;/limit&gt;
+                        &lt;/limits&gt;
+                        &lt;/rule&gt;
+                    &lt;/rules&gt;
+                &lt;/configuration&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;default-prepare-agent&lt;/id&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;prepare-agent&lt;/goal&gt;
+                        &lt;/goals&gt;
+                    &lt;/execution&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;default-report&lt;/id&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;report&lt;/goal&gt;
+                        &lt;/goals&gt;
+                    &lt;/execution&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;default-check&lt;/id&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;check&lt;/goal&gt;
+                        &lt;/goals&gt;
+                        &lt;configuration&gt;
+                            &lt;rules&gt;
+                                &lt;rule&gt;
+                                    &lt;element&gt;BUNDLE&lt;/element&gt;
+                                    &lt;limits&gt;
+                                        &lt;limit&gt;
+                                            &lt;counter&gt;COMPLEXITY&lt;/counter&gt;
+                                            &lt;value&gt;COVEREDRATIO&lt;/value&gt;
+                                            &lt;minimum&gt;0.10&lt;/minimum&gt;
+                                        &lt;/limit&gt;
+                                    &lt;/limits&gt;
+                                &lt;/rule&gt;
+                            &lt;/rules&gt;
+                        &lt;/configuration&gt;
+                    &lt;/execution&gt;
+                &lt;/executions&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+</code></pre>
+
+		</div>
+	</article>
+	<div class="share-comment">
+	 
+
+	  
+
+	  
+
+	</div>
+</div>        </div>
+			<footer id="footer" class="inner">Copyright &copy; 2014
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a> &nbsp;&nbsp; 
+Theme by <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a>
+      </footer>
+		</div>
+	</div>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="asset/prism.js"></script>
+
+
+<style type="text/css">
+figure{margin: 1em 0;padding: 0;}
+  figcaption{text-align:center;}
+
+/* PrismJS 1.14.0
+https://prismjs.com/download.html#themes=prism-coy&languages=markup+css+clike+javascript */
+/**
+ * prism.js Coy theme for JavaScript, CoffeeScript, CSS and HTML
+ * Based on https://github.com/tshedor/workshop-wp-theme (Example: http://workshop.kansan.com/category/sessions/basics or http://workshop.timshedor.com/category/sessions/basics);
+ * @author Tim  Shedor
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+  color: black;
+  background: none;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  position: relative;
+  margin: .5em 0;
+  overflow: visible;
+  padding: 0;
+}
+pre[class*="language-"]>code {
+  position: relative;
+  border-left: 10px solid #358ccb;
+  box-shadow: -1px 0px 0px 0px #358ccb, 0px 0px 0px 1px #dfdfdf;
+  background-color: #fdfdfd;
+  background-image: linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
+  background-size: 3em 3em;
+  background-origin: content-box;
+  background-attachment: local;
+}
+
+code[class*="language"] {
+  max-height: inherit;
+  height: inherit;
+  padding: 0 1em;
+  display: block;
+  overflow: auto;
+}
+
+/* Margin bottom to accomodate shadow */
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+  background-color: #fdfdfd;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin-bottom: 1em;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  position: relative;
+  padding: .2em;
+  border-radius: 0.3em;
+  color: #c92c2c;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: inline;
+  white-space: normal;
+}
+
+pre[class*="language-"]:before,
+pre[class*="language-"]:after {
+  content: '';
+  z-index: -2;
+  display: block;
+  position: absolute;
+  bottom: 0.75em;
+  left: 0.18em;
+  width: 40%;
+  height: 20%;
+  max-height: 13em;
+  box-shadow: 0px 13px 8px #979797;
+  -webkit-transform: rotate(-2deg);
+  -moz-transform: rotate(-2deg);
+  -ms-transform: rotate(-2deg);
+  -o-transform: rotate(-2deg);
+  transform: rotate(-2deg);
+}
+
+:not(pre) > code[class*="language-"]:after,
+pre[class*="language-"]:after {
+  right: 0.75em;
+  left: auto;
+  -webkit-transform: rotate(2deg);
+  -moz-transform: rotate(2deg);
+  -ms-transform: rotate(2deg);
+  -o-transform: rotate(2deg);
+  transform: rotate(2deg);
+}
+
+.token.comment,
+.token.block-comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #7D8B99;
+}
+
+.token.punctuation {
+  color: #5F6364;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.function-name,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #c92c2c;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.function,
+.token.builtin,
+.token.inserted {
+  color: #2f9c0a;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.token.variable {
+  color: #a67f59;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword,
+.token.class-name {
+  color: #1990b8;
+}
+
+.token.regex,
+.token.important {
+  color: #e90;
+}
+
+.language-css .token.string,
+.style .token.string {
+  color: #a67f59;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.token.important {
+  font-weight: normal;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.namespace {
+  opacity: .7;
+}
+
+@media screen and (max-width: 767px) {
+  pre[class*="language-"]:before,
+  pre[class*="language-"]:after {
+    bottom: 14px;
+    box-shadow: none;
+  }
+
+}
+
+/* Plugin styles */
+.token.tab:not(:empty):before,
+.token.cr:before,
+.token.lf:before {
+  color: #e0d7d1;
+}
+
+/* Plugin styles: Line Numbers */
+pre[class*="language-"].line-numbers.line-numbers {
+  padding-left: 0;
+}
+
+pre[class*="language-"].line-numbers.line-numbers code {
+  padding-left: 3.8em;
+}
+
+pre[class*="language-"].line-numbers.line-numbers .line-numbers-rows {
+  left: 0;
+}
+
+/* Plugin styles: Line Highlight */
+pre[class*="language-"][data-line] {
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+}
+pre[data-line] code {
+  position: relative;
+  padding-left: 4em;
+}
+pre .line-highlight {
+  margin-top: 0;
+}
+
+pre[class*="language-"].line-numbers {
+    position: relative;
+    padding-left: 3.8em;
+    counter-reset: linenumber;
+}
+
+pre[class*="language-"].line-numbers > code {
+    position: relative;
+    white-space: inherit;
+}
+
+.line-numbers .line-numbers-rows {
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    font-size: 100%;
+    left: -3.8em;
+    width: 3em; /* works for line-numbers below 1000 lines */
+    letter-spacing: -1px;
+    border-right: 1px solid #999;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+}
+
+    .line-numbers-rows > span {
+        pointer-events: none;
+        display: block;
+        counter-increment: linenumber;
+    }
+
+        .line-numbers-rows > span:before {
+            content: counter(linenumber);
+            color: #999;
+            display: block;
+            padding-right: 0.8em;
+            text-align: right;
+        }
+
+</style>
+  
+    
+
+
+</body>
+</html>
